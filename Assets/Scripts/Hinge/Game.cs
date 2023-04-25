@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,7 +13,7 @@ public class Game : MonoBehaviour
     float minDist = float.MaxValue;
 
     private const int MAX_TRIALS = 100;
-    public int trialsPerGeneration = 1;
+    public const int trialsPerGeneration = 100;
     public static int currNetworkIndex;
     int currTrial;
     int currGeneration = 0;
@@ -55,7 +56,7 @@ public class Game : MonoBehaviour
     public IEnumerator waitForNextRound(bool won) {
 
         if (won) {
-            minDist = -0.2f;
+            minDist = -0.15f;
             greenCounter++;
         }
 
@@ -85,10 +86,10 @@ public class Game : MonoBehaviour
         if (currTrial >= trialsPerGeneration) {
             float accuracy = (((float)greenCounter) / (GeneticAlgorithm.POPULATION * trialsPerGeneration) * 100f);
             Debug.Log(accuracy.ToString("F2") + "% accuracy");
+            saveElite();
             greenCounter = 0;
             geneticAlg.nextGeneration();
             currTrial = 0;
-            trialsPerGeneration =  Mathf.Min(currGeneration + 1, MAX_TRIALS);
             currGeneration++;
         }
 
@@ -101,7 +102,26 @@ public class Game : MonoBehaviour
         GameObject.Find("hinge").GetComponent<HingeControl>().resetHinge();
     }
 
+    void saveElite() {
+        
+        float maxFit = 0;
+        int bestIndex = 0;
+        for (int i = 0; i < geneticAlg.networks.Length; i++) {
+            if (geneticAlg.networks[i].fitness > maxFit) {
+                maxFit = geneticAlg.networks[i].fitness;
+                bestIndex = i;
+            }
+        }
+
+        float fitness = geneticAlg.networks[bestIndex].fitness;
+        string fitStr = fitness.ToString("F2");
+
+        string path = fitStr + "f-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+
+        geneticAlg.networks[bestIndex].saveNN(path);
+    }
+
     public float getFitness() {
-        return 1 / (minDist + 0.1f);
+        return 1 / (minDist + 0.5f);
     }
 }

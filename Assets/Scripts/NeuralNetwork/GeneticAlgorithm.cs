@@ -1,21 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class GeneticAlgorithm
 {
-    private const float MUTATION_VOLATILITY_MAX = 0.008f;
-    private const float MUTATION_VOLATILITY_MIN = 0.001f;
-    public const int POPULATION = 100;
+    private const float MUTATION_VOLATILITY_MAX = 0.0018f;
+    private const float MUTATION_VOLATILITY_MIN = 0.0f;
+    public const int POPULATION = 70;
     public static readonly int[] NETWORK_SHAPE = {8,16,16,8,5,1};
 
     public NeuralNetwork[] networks;
 
     // Generate new networks upon construction
     public GeneticAlgorithm() {
+
+        string persistentDataPath = Application.persistentDataPath;
+        string nnPath = "/era2";
+        string[] files = Directory.GetFiles(persistentDataPath + nnPath);
+
         networks = new NeuralNetwork[POPULATION];
         for (int i = 0; i < POPULATION; i++) {
-            networks[i] = new NeuralNetwork(NETWORK_SHAPE);
+            //networks[i] = new NeuralNetwork(NETWORK_SHAPE);
+            string fileName = nnPath + "/" + Path.GetFileName(files[i]);
+            Debug.Log(fileName);
+            networks[i] = new NeuralNetwork(fileName);
         }
     }
 

@@ -13,9 +13,12 @@ public class HingeControl : MonoBehaviour
 
     public bool activated = false;
 
+    //NeuralNetwork nn;
+
     // Start is called before the first frame update
     void Start()
     {
+        //nn = new NeuralNetwork("68.36f-2023-04-23-20-39-41");
         this.rb2d = GetComponent<Rigidbody2D>();
         rb2d.centerOfMass = Vector2.zero;
     }
@@ -48,13 +51,16 @@ public class HingeControl : MonoBehaviour
     }
 
     void checkIsActive() {
+
         try
         {
             Transform ball = GameObject.FindWithTag("ball").transform;
             Rigidbody2D ballRb2d = ball.GetComponent<Rigidbody2D>();
             Transform target = GameObject.FindWithTag("target").transform;
             float[] Y = Game.geneticAlg.networks[Game.currNetworkIndex].feedForward(new float[] {ball.position.x, ball.position.y, ballRb2d.velocity.x, ballRb2d.velocity.y, rb2d.angularVelocity, activated ? 1 : 0, target.position.x, target.position.y});
+            //float[] Y = nn.feedForward(new float[] {ball.position.x, ball.position.y, ballRb2d.velocity.x, ballRb2d.velocity.y, rb2d.angularVelocity, activated ? 1 : 0, target.position.x, target.position.y});
             activated = Y[0] > 0;
+            //activated = Input.GetButton("Jump");
         }
         catch (System.Exception){}
     }

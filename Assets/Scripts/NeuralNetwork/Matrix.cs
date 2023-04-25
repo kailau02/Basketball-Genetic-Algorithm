@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class Matrix
 {
     float[,] data;
@@ -139,5 +140,17 @@ public class Matrix
             }
         }
         return res;
+    }
+
+    public int getRows() {
+        return rows;
+    }
+
+    public int getCols() {
+        return cols;
+    }
+
+    public float get(int row, int col) {
+        return data[row,col];
     }
 }
