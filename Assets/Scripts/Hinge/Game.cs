@@ -13,7 +13,7 @@ public class Game : MonoBehaviour
     float minDist = float.MaxValue;
 
     private const int MAX_TRIALS = 100;
-    public const int trialsPerGeneration = 100;
+    public const int trialsPerGeneration = 30;
     public static int currNetworkIndex;
     int currTrial;
     int currGeneration = 0;
@@ -42,7 +42,7 @@ public class Game : MonoBehaviour
         }
 
         minDist = Mathf.Min(minDist, Vector2.Distance(ball.transform.position, target.transform.position));
-        if (ball.transform.position.y < -15f) {
+        if (ball.transform.position.y < -5f) {
             StartCoroutine(waitForNextRound(false));
         }
     }
@@ -62,7 +62,7 @@ public class Game : MonoBehaviour
 
         if (!began) {
             began = true;            
-            yield return new WaitForSeconds(won ? 1f : 0f);
+            yield return new WaitForSeconds(won ? 0.1f : 0f);
             EndRound();
             began = false;
         }

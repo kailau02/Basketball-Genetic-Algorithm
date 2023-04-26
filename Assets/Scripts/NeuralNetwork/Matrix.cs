@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class Matrix
 {
-    float[,] data;
+    public float[,] data;
     int rows;
     int cols;
 
@@ -135,7 +135,7 @@ public class Matrix
         for (int row = 0; row < m.rows; row++) {
             for (int col = 0; col < m.cols; col++) {
                 if (Random.value < volatility) {
-                    res.data[row,col] += Random.Range(-5f, 5f);
+                    res.data[row,col] += Random.Range(-0.2f, 0.2f);
                 }
             }
         }
