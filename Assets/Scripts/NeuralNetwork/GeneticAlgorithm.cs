@@ -15,15 +15,15 @@ public class GeneticAlgorithm
     // Generate new networks upon construction
     public GeneticAlgorithm() {
 
-        string persistentDataPath = Application.persistentDataPath;
-        string nnPath = "/era3";
-        string[] files = Directory.GetFiles(persistentDataPath + nnPath);
+        // string persistentDataPath = Application.persistentDataPath;
+        // string nnPath = "/era3";
+        // string[] files = Directory.GetFiles(persistentDataPath + nnPath);
 
         networks = new NeuralNetwork[POPULATION];
         for (int i = 0; i < POPULATION; i++) {
-            //networks[i] = new NeuralNetwork(NETWORK_SHAPE);
-            string fileName = nnPath + "/" + Path.GetFileName(files[i]);
-            networks[i] = new NeuralNetwork(fileName);
+            networks[i] = new NeuralNetwork(NETWORK_SHAPE);
+            // string fileName = nnPath + "/" + Path.GetFileName(files[i]);
+            // networks[i] = new NeuralNetwork(fileName);
             //Debug.Log(fileName);
             //Debug.Log(networks[i].weights[0].ToString());
 
