@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Game : MonoBehaviour
 {
-    public static GeneticAlgorithm geneticAlg;
+    //public static GeneticAlgorithm geneticAlg;
     private bool began = false;
     public TargetControl targetControl;
     GameObject ball;
@@ -21,6 +21,9 @@ public class Game : MonoBehaviour
 
     int greenCounter = 0;
 
+    int total = 0;
+    int score = 0;
+
     
     [SerializeField]
     UIControl ui;
@@ -28,7 +31,8 @@ public class Game : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        geneticAlg = new GeneticAlgorithm();
+        Time.timeScale = 5f;
+        //geneticAlg = new GeneticAlgorithm();
         SpawnBall();
     }
 
@@ -42,7 +46,7 @@ public class Game : MonoBehaviour
         }
 
         minDist = Mathf.Min(minDist, Vector2.Distance(ball.transform.position, target.transform.position));
-        if (ball.transform.position.y < -5f) {
+        if (ball.transform.position.y < -15f) {
             StartCoroutine(waitForNextRound(false));
         }
     }
@@ -58,9 +62,10 @@ public class Game : MonoBehaviour
         if (won) {
             minDist = -0.15f;
             greenCounter++;
+            score++;
         }
 
-        if (!began) {
+        if (!began && !won) {
             began = true;            
             yield return new WaitForSeconds(won ? 0.1f : 0f);
             EndRound();
@@ -70,58 +75,62 @@ public class Game : MonoBehaviour
 
     void EndRound() {
         timer = 0f;
-        // next network
-        geneticAlg.networks[currNetworkIndex].fitness += getFitness();
-        currNetworkIndex++;
-        targetControl.resetColor();
+        // // next network
+        // geneticAlg.networks[currNetworkIndex].fitness += getFitness();
+        // currNetworkIndex++;
+        // targetControl.resetColor();
 
-        // next target position
-        if (currNetworkIndex >= GeneticAlgorithm.POPULATION) {
-            targetControl.randomizePosition();
-            currNetworkIndex = 0;
-            currTrial++;
-        }
+        // // next target position
+        // if (currNetworkIndex >= GeneticAlgorithm.POPULATION) {
+        //     targetControl.randomizePosition();
+        //     currNetworkIndex = 0;
+        //     currTrial++;
+        // }
 
-        // next generation
-        if (currTrial >= trialsPerGeneration) {
-            float accuracy = (((float)greenCounter) / (GeneticAlgorithm.POPULATION * trialsPerGeneration) * 100f);
-            Debug.Log(accuracy.ToString("F2") + "% accuracy");
-            saveElite();
-            greenCounter = 0;
-            geneticAlg.nextGeneration();
-            currTrial = 0;
-            currGeneration++;
-        }
+        // // next generation
+        // if (currTrial >= trialsPerGeneration) {
+        //     float accuracy = (((float)greenCounter) / (GeneticAlgorithm.POPULATION * trialsPerGeneration) * 100f);
+        //     Debug.Log(accuracy.ToString("F2") + "% accuracy");
+        //     saveElite();
+        //     greenCounter = 0;
+        //     geneticAlg.nextGeneration();
+        //     currTrial = 0;
+        //     currGeneration++;
+        // }
+
+        total++;
+        targetControl.randomizePosition();
 
         // start round
         SpawnBall();
         minDist = float.MaxValue;
-        ui.SetGenerationText(currGeneration);
-        ui.SetTrialText(currTrial, trialsPerGeneration);
-        ui.SetNetworkText(currNetworkIndex, GeneticAlgorithm.POPULATION);
+        // ui.SetGenerationText(currGeneration);
+        // ui.SetTrialText(currTrial, trialsPerGeneration);
+        // ui.SetNetworkText(currNetworkIndex, GeneticAlgorithm.POPULATION);
+        ui.UpdateScore(score, total);
         GameObject.Find("hinge").GetComponent<HingeControl>().resetHinge();
     }
 
-    void saveElite() {
+    // void saveElite() {
         
-        float maxFit = 0;
-        int bestIndex = 0;
-        for (int i = 0; i < geneticAlg.networks.Length; i++) {
-            if (geneticAlg.networks[i].fitness > maxFit) {
-                maxFit = geneticAlg.networks[i].fitness;
-                bestIndex = i;
-            }
-        }
+    //     float maxFit = 0;
+    //     int bestIndex = 0;
+    //     for (int i = 0; i < geneticAlg.networks.Length; i++) {
+    //         if (geneticAlg.networks[i].fitness > maxFit) {
+    //             maxFit = geneticAlg.networks[i].fitness;
+    //             bestIndex = i;
+    //         }
+    //     }
 
-        float fitness = geneticAlg.networks[bestIndex].fitness;
-        string fitStr = fitness.ToString("F2");
+    //     float fitness = geneticAlg.networks[bestIndex].fitness;
+    //     string fitStr = fitness.ToString("F2");
 
-        string path = fitStr + "f-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+    //     string path = fitStr + "f-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
 
-        geneticAlg.networks[bestIndex].saveNN(path);
-    }
+    //     geneticAlg.networks[bestIndex].saveNN(path);
+    // }
 
-    public float getFitness() {
-        return 1 / (minDist + 0.5f);
-    }
+    // public float getFitness() {
+    //     return 1 / (minDist + 0.5f);
+    // }
 }

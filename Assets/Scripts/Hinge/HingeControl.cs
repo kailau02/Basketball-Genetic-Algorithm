@@ -13,12 +13,12 @@ public class HingeControl : MonoBehaviour
 
     public bool activated = false;
 
-    //NeuralNetwork nn;
+    NeuralNetwork nn;
 
     // Start is called before the first frame update
     void Start()
     {
-        //nn = new NeuralNetwork("81.18f-2023-04-26-00-07-48");
+        nn = new NeuralNetwork("model-98p");
         this.rb2d = GetComponent<Rigidbody2D>();
         rb2d.centerOfMass = Vector2.zero;
     }
@@ -57,8 +57,8 @@ public class HingeControl : MonoBehaviour
             Transform ball = GameObject.FindWithTag("ball").transform;
             Rigidbody2D ballRb2d = ball.GetComponent<Rigidbody2D>();
             Transform target = GameObject.FindWithTag("target").transform;
-            float[] Y = Game.geneticAlg.networks[Game.currNetworkIndex].feedForward(new float[] {ball.position.x, ball.position.y, ballRb2d.velocity.x, ballRb2d.velocity.y, rb2d.angularVelocity, activated ? 1 : 0, transform.rotation.z, target.position.x, target.position.y});
-            //float[] Y = nn.feedForward(new float[] {ball.position.x, ball.position.y, ballRb2d.velocity.x, ballRb2d.velocity.y, rb2d.angularVelocity, activated ? 1 : 0, transform.rotation.z, target.position.x, target.position.y});
+            //float[] Y = Game.geneticAlg.networks[Game.currNetworkIndex].feedForward(new float[] {ball.position.x, ball.position.y, ballRb2d.velocity.x, ballRb2d.velocity.y, rb2d.angularVelocity, activated ? 1 : 0, transform.rotation.z, target.position.x, target.position.y});
+            float[] Y = nn.feedForward(new float[] {ball.position.x, ball.position.y, ballRb2d.velocity.x, ballRb2d.velocity.y, rb2d.angularVelocity, activated ? 1 : 0, transform.rotation.z, target.position.x, target.position.y});
             activated = Y[0] > 0;
             //activated = Input.GetButton("Jump");
         }
